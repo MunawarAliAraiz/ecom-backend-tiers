@@ -14,7 +14,7 @@ router.post('/upload', upload.single('product'), (req, res) => {
     res.json({
         success: 1,
         image: {
-            url: `http://localhost:${port}/api/products/images/${req.file.filename}`
+            url: `https://ecom-server-tiers.onrender.com/api/products/images/${req.file.filename}`
         }
     })
 })
