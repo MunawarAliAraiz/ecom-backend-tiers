@@ -166,8 +166,8 @@ router.post('/checkout-session', auth, async (req, res) => {
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
-        success_url: 'http://localhost:8080/success',
-        cancel_url: 'http://localhost:8080/cancel',
+        success_url: 'https://e-commerce-tiers.netlify.app/success',
+        cancel_url: 'https://e-commerce-tiers.netlify.app/cancel',
     });
 
     res.json({ id: session.id });
