@@ -25,4 +25,38 @@ const auth = (req, res, next) => {
     }
 }
 
-module.exports = auth;
+// Admin middleware
+const adminAuth = (req, res, next) => {
+    const token = req.header('Authorization');
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "No token, authorization denied"
+        });
+    }
+
+    try {
+        // Verify the token
+        const decoded = jwt.verify(token, password); // Replace with your actual secret key
+
+        // Assuming your decoded token contains a 'role' property indicating the user's role
+        if (decoded.email === 'admin@gmail.com') {
+            req.user = decoded; // Attach the decoded user information to the request
+            next();
+        } else {
+            res.status(401).json({
+                success: false,
+                message: "Not authorized as an admin"
+            });
+        }
+    } catch (error) {
+        console.error('Token verification failed:', error.message);
+        res.status(401).json({
+            success: false,
+            message: "Invalid token"
+        });
+    }
+};
+
+module.exports = { auth, adminAuth };

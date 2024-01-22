@@ -6,10 +6,75 @@ const saltRounds = 10;
 require('dotenv').config();
 const password = process.env.MONGO_DB_PASSWORD; // Update the password accordingly
 const User = require('../models/UserModel'); // Update the path accordingly
-const auth = require('../middleware/authMiddleware');
+const {auth, adminAuth} = require('../middleware/authMiddleware');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Endpoints for Users
+
+// Endpoint to for admin verification
+router.get('/isadmin', adminAuth, async (req, res) => {
+    res.json({
+        success: true,
+        message: "Admin verified successfully"
+    })
+})
+
+// End point for Admin Panel Login
+router.post('/adminpanellogin', async (req, res) => {
+    try {
+      let user = await User.findOne({ email: 'admin@gmail.com' });
+  
+      if (!user) {
+        // Admin user does not exist, create it
+        const adminPassword = 'admin123';
+        const hashedPassword = await bcrypt.hash(adminPassword, saltRounds);
+        const newUser = new User({
+          name: 'admin',
+          email: 'admin@gmail.com',
+          password: hashedPassword,
+        });
+  
+        user = await newUser.save();
+  
+        if (!user) {
+          return res.status(500).json({
+            success: false,
+            message: 'Error creating admin user',
+          });
+        }
+      }
+  
+      const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+  
+      if (!passwordMatch) {
+        console.log('password does not match');
+        return res.status(400).json({
+          success: false,
+          message: 'Incorrect password',
+        });
+      }
+  
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+  
+      const token = jwt.sign(data, password);
+      res.json({
+        success: true,
+        token,
+        message: 'Admin logged in successfully',
+      });
+    } catch (error) {
+      console.error('Error during admin panel login:', error.message);
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  });
+  
 
 // Register a user
 router.post('/signup', async (req, res) => {
