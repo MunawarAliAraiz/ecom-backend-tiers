@@ -39,17 +39,9 @@ const adminAuth = (req, res, next) => {
     try {
         // Verify the token
         const decoded = jwt.verify(token, password); // Replace with your actual secret key
-
         // Assuming your decoded token contains a 'role' property indicating the user's role
-        if (decoded.user.email === 'admin@gmail.com') {
-            req.user = decoded.user; // Attach the decoded user information to the request
-            next();
-        } else {
-            res.status(401).json({
-                success: false,
-                message: "Not authorized as an admin"
-            });
-        }
+        req.user = decoded.user; // Attach the decoded user information to the request
+        next();
     } catch (error) {
         console.error('Token verification failed:', error.message);
         res.status(401).json({

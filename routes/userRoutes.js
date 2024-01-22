@@ -13,6 +13,13 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Endpoint to for admin verification
 router.get('/isadmin', adminAuth, async (req, res) => {
+    let user = await User.findOne({_id: req.user.id})
+    if (user.email !== 'admin@gmail.com') {
+        return res.status(400).json({
+            success: false,
+            message: "Not authorized as an admin"
+        })
+    }
     res.json({
         success: true,
         message: "Admin verified successfully"
