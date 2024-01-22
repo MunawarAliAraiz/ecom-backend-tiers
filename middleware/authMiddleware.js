@@ -41,7 +41,7 @@ const adminAuth = (req, res, next) => {
         const decoded = jwt.verify(token, password); // Replace with your actual secret key
 
         // Assuming your decoded token contains a 'role' property indicating the user's role
-        if (decoded.email === 'admin@gmail.com') {
+        if (decoded.user.email === 'admin@gmail.com') {
             req.user = decoded; // Attach the decoded user information to the request
             next();
         } else {
