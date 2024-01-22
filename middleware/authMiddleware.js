@@ -42,7 +42,7 @@ const adminAuth = (req, res, next) => {
 
         // Assuming your decoded token contains a 'role' property indicating the user's role
         if (decoded.user.email === 'admin@gmail.com') {
-            req.user = decoded; // Attach the decoded user information to the request
+            req.user = decoded.user; // Attach the decoded user information to the request
             next();
         } else {
             res.status(401).json({
