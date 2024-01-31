@@ -5,6 +5,9 @@ const upload  = require('../uploads/multerConfig');
 const port = 4000;
 const Product = require('../models/ProductModel'); // Update the path accordingly
 
+// const serverUrl = "https://ecom-server-tiers.onrender.com/";
+const serverUrl = "http://localhost:4000/";
+
 
 // Upload Endpoints for Image
 
@@ -14,7 +17,7 @@ router.post('/upload', upload.single('product'), (req, res) => {
     res.json({
         success: 1,
         image: {
-            url: `https://ecom-server-tiers.onrender.com/api/products/images/${req.file.filename}`
+            url: `${serverUrl}api/products/images/${req.file.filename}`
         }
     })
 })
